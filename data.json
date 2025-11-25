@@ -14,6 +14,9 @@
     "aanzet": [
         "Zacht"
     ],
+    "smaak": [
+        "Licht Zoet"
+    ],
     "nasmaak_lengte": "Medium",
     "nasmaak_karakter": [
         "Mineraal"
@@ -49,6 +52,10 @@
     "aanzet": [
         "Zuur"
     ],
+    "smaak": [
+        "Zuur",
+        "Aards"
+    ],
     "nasmaak_lengte": "Kort",
     "nasmaak_karakter": [
         "Kalkachtig",
@@ -76,7 +83,7 @@
     "bronType": "Kraan (Thuis)",
     "land": "De Steeg, Langerak, Nederland",
     "score": 6.5,
-    "zuur": 1,
+    "zuur": 0,
     "zout": 2,
     "bitter": 1,
     "mondgevoel": [
@@ -84,6 +91,10 @@
     ],
     "aanzet": [
         "Zacht"
+    ],
+    "smaak": [
+        "Licht Zilt",
+        "Neutraal"
     ],
     "nasmaak_lengte": "Kort",
     "nasmaak_karakter": [
@@ -102,6 +113,46 @@
         "Cl": "44",
         "SiO2": "",
         "NO3": "3.1"
+    },
+    "datum": "2025-11-25"
+},
+{
+    "naam": "Thuis, Badkamer 2",
+    "merk": "Oasen",
+    "bronType": "Kraan (Thuis)",
+    "land": "De Steeg, Langerak, Nederland",
+    "score": 6,
+    "zuur": 0,
+    "zout": 2,
+    "bitter": 1,
+    "mondgevoel": [
+        "Zacht"
+    ],
+    "aanzet": [
+        "Zacht"
+    ],
+    "smaak": [
+        "Metalig",
+        "Licht Zilt",
+        "Klein Bittertje"
+    ],
+    "nasmaak_lengte": "Kort",
+    "nasmaak_karakter": [
+        "Bitter"
+    ],
+    "notities": "Doordat het water langer door de leidingen loopt krijgt het een wat metalige smaak. Ook is er een licht zouten karakter te vinden.",
+    "mineralen": {
+        "pH": "",
+        "TDS": "",
+        "Ca": "",
+        "Mg": "",
+        "Na": "",
+        "K": "",
+        "HCO3": "",
+        "SO4": "",
+        "Cl": "",
+        "SiO2": "",
+        "NO3": ""
     },
     "datum": "2025-11-25"
 }

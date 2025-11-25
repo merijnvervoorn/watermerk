@@ -264,6 +264,7 @@
                     <div v-if="uniqueCountries.length > 0"><span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Regio / Land</span><div class="flex flex-wrap gap-1.5"><button v-for="land in uniqueCountries" :key="land" @click="toggleFilter('countries', land)" :class="['filter-tag', filter.countries.includes(land) ? 'active' : 'inactive']">{{ land }}</button></div></div>
                     <div><span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Mondgevoel</span><div class="flex flex-wrap gap-1.5"><button v-for="opt in options.mondgevoel" :key="opt" @click="toggleFilter('mondgevoel', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button></div></div>
                     <div><span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Aanzet</span><div class="flex flex-wrap gap-1.5"><button v-for="opt in options.aanzet" :key="opt" @click="toggleFilter('aanzet', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button></div></div>
+                    <div><span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Smaak</span><div class="flex flex-wrap gap-1.5"><button v-for="opt in options.smaak" :key="opt" @click="toggleFilter('smaak', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button></div></div>
                 </div>
                 
                 <div class="mt-6 pt-4 border-t border-slate-400/10 text-center"><p class="text-[10px] text-slate-400">{{ processedWaters.length }} resultaten</p></div>
@@ -347,7 +348,39 @@
              <div><label class="label">Notitie</label><textarea v-model="form.notities" rows="2" class="input-glass italic" placeholder="Beschrijf de ervaring..."></textarea></div>
             <hr class="border-slate-200/50">
             <div><h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Balans</h3><div class="bg-white/40 p-5 rounded-xl border border-white/60 space-y-6"><div v-for="metric in ['zuur', 'zout', 'bitter']" :key="metric" class="flex items-center gap-4"><label class="w-14 text-[10px] uppercase font-bold text-slate-400">{{ metric }}</label><input type="range" v-model.number="form[metric]" min="0" max="10" step="1" class="flex-1"><span class="w-6 text-right font-mono text-sm text-sky-700 font-bold">{{ form[metric] }}</span></div></div></div>
-            <div class="space-y-5"><div><label class="label mb-2">Mondgevoel</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.mondgevoel" @click="toggleTag('mondgevoel', opt)" :class="form.mondgevoel.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div><label class="label mb-2">Aanzet</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.aanzet" @click="toggleTag('aanzet', opt)" :class="form.aanzet.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="label mb-2">Nasmaak Lengte</label><select v-model="form.nasmaak_lengte" class="input-glass cursor-pointer"><option v-for="opt in options.nasmaak_lengte" :value="opt">{{ opt }}</option></select></div><div><label class="label mb-2">Nasmaak Karakter</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.nasmaak_karakter" @click="toggleTag('nasmaak_karakter', opt)" :class="form.nasmaak_karakter.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div></div></div>
+            
+            <div class="space-y-5">
+                <div>
+                    <label class="label mb-2">Mondgevoel</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" v-for="opt in options.mondgevoel" @click="toggleTag('mondgevoel', opt)" :class="form.mondgevoel.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="label mb-2">Aanzet</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" v-for="opt in options.aanzet" @click="toggleTag('aanzet', opt)" :class="form.aanzet.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="label mb-2">Smaakkarakteristieken</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" v-for="opt in options.smaak" @click="toggleTag('smaak', opt)" :class="form.smaak.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="label mb-2">Nasmaak Lengte</label>
+                        <select v-model="form.nasmaak_lengte" class="input-glass cursor-pointer"><option v-for="opt in options.nasmaak_lengte" :value="opt">{{ opt }}</option></select>
+                    </div>
+                    <div>
+                        <label class="label mb-2">Nasmaak Karakter</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" v-for="opt in options.nasmaak_karakter" @click="toggleTag('nasmaak_karakter', opt)" :class="form.nasmaak_karakter.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="bg-blue-50/70 p-6 rounded-xl border border-blue-100 shadow-sm"><h3 class="text-sm font-bold text-blue-900 mb-6 flex items-center"><svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>Samenstelling (mg/L & pH)</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-4"><div v-for="min in mineralFields" :key="min.key" class="flex flex-col"><label class="mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">{{ min.label }} <span class="text-blue-300 ml-0.5">({{ min.key }})</span></label><input v-model="form.mineralen[min.key]" type="text" class="input-solid" placeholder="-"></div></div></div>
             <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-400/30 transition-all transform hover:-translate-y-0.5 text-xs tracking-widest uppercase">Genereer JSON Code</button>
@@ -367,14 +400,12 @@
                 view: 'list', loading: true, waters: [], generatedJson: null, copyStatus: 'KOPIEER', showCompareModal: false, compareSelection: [],
                 filter: { search: '', sort: 'score_desc', tags: [], countries: [] },
                 
-                // TDS is nu toegevoegd aan mineralInfo als laatste item
                 mineralInfo: [
                     { name: 'Calcium', chem: 'Ca', effect: 'Krijt & Structuur', thresholds: { '100+': 'Droog, Krijtachtig', '20-80': 'Zacht Mineraal', '<10': 'Extreem Zacht' } },
                     { name: 'Magnesium', chem: 'Mg', effect: 'Bitter & Zilt', thresholds: { '30+': 'Zilt/Bitter nuance', '5-20': 'Fris, Mild', '<5': 'Neutraal' } },
                     { name: 'Bicarbonaat', chem: 'HCO3', effect: 'Romigheid', thresholds: { '250+': 'Rond, Zoetig', '100-250': 'Evenwichtig', '<20': 'Strak, Dun' } },
                     { name: 'Sulfaat', chem: 'SO4', effect: 'Droogheid', thresholds: { '200+': 'Strak, Bittertje', '50-200': 'Modern Fris', '<30': 'Zacht' } },
                     { name: 'Natrium', chem: 'Na', effect: 'Ziltigheid', thresholds: { '50+': 'Duidelijk Zilt', '10-40': 'Subtiel', '<10': 'Neutraal' } },
-                    // TDS als 6e item:
                     { name: 'Droogrest (TDS)', chem: 'Totaal', effect: 'Gewicht & Body', thresholds: { '0-50': 'Super Laag (Licht)', '50-250': 'Laag (Fris)', '250-800': 'Medium (Body)', '800-1500': 'Hoog (Aanwezig)', '1500+': 'Zeer Hoog (Zwaar)' } }
                 ],
                 referenceWaters: [
@@ -385,14 +416,24 @@
                     { name: 'Vittel', Ca: '240', Mg: '42', Na: '5', SO4: '400', HCO3: '384', TDS: '1084', pH: '7.3' }
                 ],
                 mineralFields: [ { key: 'Ca', label: 'Calcium' }, { key: 'Mg', label: 'Magnesium' }, { key: 'Na', label: 'Natrium' }, { key: 'SO4', label: 'Sulfaat' }, { key: 'HCO3', label: 'Bicarbonaat' }, { key: 'TDS', label: 'Droogrest' }, { key: 'pH', label: 'pH' }, { key: 'Cl', label: 'Chloride' }, { key: 'SiO2', label: 'Silica' }, { key: 'K', label: 'Kalium' }, { key: 'NO3', label: 'Nitraat' } ],
-                options: { mondgevoel: ['Zacht', 'Romig', 'Vol', 'Strak', 'Droog', 'Krijtachtig'], aanzet: ['Zacht', 'Rond', 'Fris', 'Zuur', 'Strak'], nasmaak_lengte: ['Kort', 'Medium', 'Lang'], nasmaak_karakter: ['Droog', 'Romig', 'Mineraal', 'Kalkachtig', 'Zuur', 'Neutraal', 'Bitter'] },
-                form: { naam: '', merk: '', bronType: 'Fles (Mineraal)', land: '', score: 7.5, zuur: 5, zout: 2, bitter: 1, mondgevoel: [], aanzet: [], nasmaak_lengte: 'Medium', nasmaak_karakter: [], notities: '', mineralen: { pH: '', TDS: '', Ca: '', Mg: '', Na: '', K: '', HCO3: '', SO4: '', Cl: '', SiO2: '', NO3: '' } }
+                options: { 
+                    mondgevoel: ['Zacht', 'Romig', 'Vol', 'Strak', 'Droog', 'Krijtachtig'], 
+                    aanzet: ['Zacht', 'Rond', 'Fris', 'Zuur', 'Strak'], 
+                    // NIEUWE OPTIES HIER TOEGEVOEGD:
+                    smaak: ['Kalkachtig', 'Steen', 'Metalig', 'Zilt', 'Aards', 'Neutraal', 'Zuur', 'Licht Zoet', 'Licht Zilt', 'Klein Bittertje', 'Droge Mineraliteit', 'Krijtdroog'],
+                    nasmaak_lengte: ['Kort', 'Medium', 'Lang'], 
+                    nasmaak_karakter: ['Droog', 'Romig', 'Mineraal', 'Kalkachtig', 'Zuur', 'Neutraal', 'Bitter'] 
+                },
+                form: { 
+                    naam: '', merk: '', bronType: 'Fles (Mineraal)', land: '', score: 7.5, zuur: 5, zout: 2, bitter: 1, 
+                    mondgevoel: [], aanzet: [], smaak: [], // NIEUW VELD IN FORM
+                    nasmaak_lengte: 'Medium', nasmaak_karakter: [], notities: '', 
+                    mineralen: { pH: '', TDS: '', Ca: '', Mg: '', Na: '', K: '', HCO3: '', SO4: '', Cl: '', SiO2: '', NO3: '' } 
+                }
             }
         },
         computed: {
             activeFilterCount() { return this.filter.tags.length + this.filter.countries.length; },
-            
-            // Feature 3: Automatische lijst van landen voor filter
             uniqueCountries() {
                 if (!this.waters) return [];
                 const lands = this.waters.map(w => w.land).filter(l => l);
@@ -403,11 +444,14 @@
                 if (this.filter.search) { const q = this.filter.search.toLowerCase(); result = result.filter(w => w.naam.toLowerCase().includes(q) || w.merk.toLowerCase().includes(q)); }
                 if (this.filter.tags.length > 0) {
                     result = result.filter(w => {
-                        const waterTags = [ ...(Array.isArray(w.mondgevoel) ? w.mondgevoel : []), ...(Array.isArray(w.aanzet) ? w.aanzet : []) ];
+                        const waterTags = [ 
+                            ...(Array.isArray(w.mondgevoel) ? w.mondgevoel : []), 
+                            ...(Array.isArray(w.aanzet) ? w.aanzet : []),
+                            ...(Array.isArray(w.smaak) ? w.smaak : []) // OOK FILTEREN OP SMAAK
+                        ];
                         return this.filter.tags.some(tag => waterTags.includes(tag));
                     });
                 }
-                // Filteren op Land
                 if (this.filter.countries.length > 0) { result = result.filter(w => this.filter.countries.includes(w.land)); }
 
                 result.sort((a, b) => {
@@ -440,9 +484,15 @@
                 if (index === -1) targetArray.push(value); else targetArray.splice(index, 1); 
             },
             clearFilters() { this.filter.tags = []; this.filter.countries = []; this.filter.search = ''; },
-            hasTags(val) { return Array.isArray(val) ? val.length > 0 : (val && val.length > 0); },
-            formatTags(val) { return Array.isArray(val) ? val.join(', ') : val; },
-            getAllTags(water) { let tags = []; if (Array.isArray(water.mondgevoel)) tags.push(...water.mondgevoel); if (Array.isArray(water.aanzet)) tags.push(...water.aanzet); if (water.nasmaak_lengte) tags.push(water.nasmaak_lengte + " afdronk"); if (Array.isArray(water.nasmaak_karakter)) tags.push(...water.nasmaak_karakter); return tags; },
+            getAllTags(water) { 
+                let tags = []; 
+                if (Array.isArray(water.mondgevoel)) tags.push(...water.mondgevoel); 
+                if (Array.isArray(water.aanzet)) tags.push(...water.aanzet); 
+                if (Array.isArray(water.smaak)) tags.push(...water.smaak); // NIEUWE TAGS WEERGEVEN
+                if (water.nasmaak_lengte) tags.push(water.nasmaak_lengte + " afdronk"); 
+                if (Array.isArray(water.nasmaak_karakter)) tags.push(...water.nasmaak_karakter); 
+                return tags; 
+            },
             generateJSON() { const newEntry = { ...this.form, datum: new Date().toISOString().split('T')[0] }; this.generatedJson = ",\n" + JSON.stringify(newEntry, null, 4); },
             copyToClipboard() { navigator.clipboard.writeText(this.generatedJson).then(() => { this.copyStatus = 'GEKOPIEERD!'; setTimeout(() => this.copyStatus = 'KOPIEER', 2000); }); },
             toggleCompare(water) {
