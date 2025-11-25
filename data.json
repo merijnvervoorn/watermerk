@@ -3,6 +3,7 @@
     "naam": "Acqua Panna",
     "merk": "San Pellegrino",
     "bronType": "Fles (Mineraal)",
+    "land": "Toscane, Italië",
     "score": 8.5,
     "zuur": 1,
     "zout": 2,
@@ -37,6 +38,7 @@
     "naam": "Spa Reine",
     "merk": "Spa",
     "bronType": "Fles (Mineraal)",
+    "land": "De Venen, Spa, België",
     "score": 3.0,
     "zuur": 6,
     "zout": 3,
@@ -65,6 +67,41 @@
         "Cl": "5",
         "SiO2": "7",
         "NO3": "1.5"
+    },
+    "datum": "2025-11-25"
+},
+{
+    "naam": "Thuis, Keuken",
+    "merk": "Oasen",
+    "bronType": "Kraan (Thuis)",
+    "land": "De Steeg, Langerak, Nederland",
+    "score": 6.5,
+    "zuur": 1,
+    "zout": 2,
+    "bitter": 1,
+    "mondgevoel": [
+        "Zacht"
+    ],
+    "aanzet": [
+        "Zacht"
+    ],
+    "nasmaak_lengte": "Kort",
+    "nasmaak_karakter": [
+        "Neutraal"
+    ],
+    "notities": "Steady kraanwater. Vrij neutrale smaak, met licht zoute tinten.",
+    "mineralen": {
+        "pH": "8.1",
+        "TDS": "",
+        "Ca": "34.3",
+        "Mg": "10.3",
+        "Na": "44.8",
+        "K": "",
+        "HCO3": "159.5",
+        "SO4": "27.3",
+        "Cl": "44",
+        "SiO2": "",
+        "NO3": "3.1"
     },
     "datum": "2025-11-25"
 }

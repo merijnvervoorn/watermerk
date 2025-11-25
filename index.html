@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watermerk: Rate Water</title>
-    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png?v=2">
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         /* ACHTERGROND */
@@ -23,11 +23,12 @@
             color: #334155;
         }
 
+        /* TYPOGRAFIE: DE KLASSIEKE LOOK */
         .font-serif { 
             font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
         }
 
-        /* DE KAART */
+        /* GLAZEN ELEMENTEN */
         .glass-card {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(16px);
@@ -36,6 +37,7 @@
             border-radius: 1rem;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
         .glass-card:hover {
             transform: translateY(-4px);
@@ -43,37 +45,6 @@
             border-color: #fff;
         }
 
-        /* GHOST COMPARE BUTTON (Inline versie) */
-        .ghost-compare {
-            opacity: 0; /* Standaard onzichtbaar */
-            transition: all 0.3s ease;
-            color: #94a3b8;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            margin-right: 0.5rem; /* Ruimte tot de druppel */
-        }
-        .ghost-compare:hover {
-            background-color: rgba(255,255,255,0.6);
-            color: #0ea5e9;
-        }
-        /* Laat zien bij hover over de kaart */
-        .glass-card:hover .ghost-compare {
-            opacity: 1;
-        }
-        /* Laat zien als actief (geselecteerd) */
-        .ghost-compare.active {
-            opacity: 1;
-            color: #0ea5e9; /* Sky Blue */
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(14, 165, 233, 0.2);
-        }
-        /* Op mobiel iets zichtbaar maken */
-        @media (max-width: 1024px) {
-            .ghost-compare { opacity: 0.3; }
-        }
-
-        /* DE SIDEBAR */
         .glass-sidebar {
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(10px);
@@ -82,13 +53,12 @@
             padding: 1.5rem;
         }
 
-        /* VERGELIJK MODAL */
         .glass-modal {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
         }
 
-        /* DE SCORE DRUPPEL */
+        /* SCORE DRUPPEL */
         .water-drop {
             width: 3.8rem; 
             height: 3.8rem;
@@ -101,17 +71,40 @@
             justify-content: center;
             box-shadow: inset 0 2px 6px rgba(255,255,255,0.9), 0 8px 20px -4px rgba(14, 165, 233, 0.4);
         }
-        .water-drop span {
-            transform: rotate(-45deg);
+        .water-drop span { transform: rotate(-45deg); }
+
+        /* GHOST BUTTON (Inline versie - CORRECTE POSITIE) */
+        .ghost-compare {
+            opacity: 0; 
+            transition: all 0.3s ease; 
+            color: #94a3b8; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 50%; 
+            margin-right: 0.5rem; /* Ruimte rechts naast de knop */
         }
+        .ghost-compare:hover { 
+            background-color: rgba(255,255,255,0.6); 
+            color: #0ea5e9; 
+        }
+        /* Toon bij hover over de kaart */
+        .glass-card:hover .ghost-compare { opacity: 1; }
+        /* Toon als actief */
+        .ghost-compare.active { 
+            opacity: 1; 
+            color: #0ea5e9; 
+            background-color: white; 
+            box-shadow: 0 2px 5px rgba(14, 165, 233, 0.2); 
+        }
+        @media (max-width: 1024px) { .ghost-compare { opacity: 0.3; } }
 
         /* INPUTS */
         .input-glass { width: 100%; background-color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 0.5rem; padding: 0.6rem 1rem; font-size: 0.85rem; color: #334155; outline: none; transition: all 0.2s; }
         .input-glass:focus { background-color: white; border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
         select.input-glass { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.2em 1.2em; padding-right: 2.5rem; }
 
-        /* SLIDERS */
-        input[type=range] { width: 100%; background: transparent; }
+        /* SLIDERS (Soft Look - CORRECT) */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #cbd5e1 !important; border-radius: 3px; cursor: pointer; border: 1px solid rgba(255,255,255,0.5); }
         input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #0ea5e9; border: 2px solid #ffffff; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; }
         /* Firefox support */
@@ -123,13 +116,16 @@
         .input-solid:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         .input-solid::placeholder { color: #cbd5e1; }
 
-        /* FILTER TAGS */
+        /* INFO TABLE */
+        .info-table th { font-size: 0.75rem; text-transform: uppercase; color: #64748b; padding: 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.05); text-align: left; font-weight: 700; }
+        .info-table td { padding: 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.85rem; font-family: 'Inter', monospace; color: #334155; }
+        .info-table tr:last-child td { border-bottom: none; }
+
+        /* UTILS */
         .filter-tag { cursor: pointer; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid; transition: all 0.2s; }
         .filter-tag.active { background-color: #0ea5e9; color: white; border-color: #0ea5e9; }
         .filter-tag.inactive { background-color: transparent; color: #64748b; border-color: #cbd5e1; }
         .filter-tag.inactive:hover { border-color: #0ea5e9; color: #0ea5e9; background-color: white; }
-
-        /* COMPARE FLOATING BUTTON */
         .compare-float { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.9); color: white; padding: 0.75rem 1.5rem; border-radius: 9999px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: all 0.3s; z-index: 40; }
         .compare-float:hover { transform: translateX(-50%) translateY(-2px); background: black; }
 
@@ -148,67 +144,134 @@
             <h1 class="text-3xl font-serif font-bold text-slate-800 tracking-tight">Watermerk<span class="text-sky-500">.</span></h1>
             <p class="text-xs text-slate-500 uppercase tracking-widest font-medium mt-1 ml-0.5 opacity-80">L'eau de Merijn</p>
         </div>
-        <button 
-            @click="toggleView" 
-            class="text-xs font-bold uppercase tracking-widest text-sky-700 hover:text-sky-900 transition px-5 py-2.5 bg-white/40 hover:bg-white backdrop-blur-sm border border-white rounded-full shadow-sm hover:shadow-md">
-            {{ view === 'list' ? '+ Nieuw' : 'Annuleren' }}
-        </button>
+        <div class="flex items-center gap-3">
+            <button @click="view = view === 'info' ? 'list' : 'info'" 
+                :class="['w-9 h-9 flex items-center justify-center rounded-full border transition-all duration-300', 
+                         view === 'info' ? 'bg-sky-100 border-sky-300 text-sky-700 scale-110 shadow-sm' : 'border-sky-200 text-sky-600 hover:bg-sky-50']"
+                title="Informatie & Uitleg">
+                <span class="font-serif font-bold italic text-sm">{{ view === 'info' ? '✕' : 'i' }}</span>
+            </button>
+            
+            <button 
+                @click="toggleView" 
+                class="text-xs font-bold uppercase tracking-widest text-sky-700 hover:text-sky-900 transition px-5 py-2.5 bg-white/40 hover:bg-white backdrop-blur-sm border border-white rounded-full shadow-sm hover:shadow-md">
+                {{ view === 'list' || view === 'info' ? '+ Nieuw' : 'Terug' }}
+            </button>
+        </div>
     </header>
 
     <transition name="fade" mode="out-in">
-    <div v-if="view === 'list'" key="list" class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
+    <div v-if="view === 'info'" key="info" class="max-w-4xl mx-auto space-y-8">
         
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-serif text-slate-800 mb-2">Water Smaakprofielen</h2>
+            <p class="text-slate-500 text-sm">Hoe mineralen de structuur en smaak bepalen.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-for="info in mineralInfo" :key="info.name" class="glass-card p-6">
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="text-lg font-bold text-slate-800">{{ info.name }} <span class="text-sky-400 text-sm">({{ info.chem }})</span></h3>
+                </div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{{ info.effect }}</p>
+                <ul class="text-xs text-slate-600 space-y-1.5 font-mono">
+                    <li v-for="(desc, val) in info.thresholds" class="flex justify-between border-b border-slate-100 pb-1 last:border-0">
+                        <span>{{ val }}</span> <span class="text-slate-800 font-medium">{{ desc }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="glass-card p-8 bg-sky-50/30">
+            <h3 class="text-xl font-serif text-slate-800 mb-6 text-center">Smaak Synergie</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex gap-4 items-start">
+                    <div class="bg-white p-3 rounded-full shadow-sm text-xl">🧪</div>
+                    <div>
+                        <h4 class="font-bold text-slate-700 text-sm mb-1">Hardheid & Structuur</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed">Combinatie <strong>Calcium + Magnesium</strong>. Veel van beide geeft een "droge", "krijtige" en complexe structuur (bv. Vittel). Weinig van beide maakt water "leeg".</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="bg-white p-3 rounded-full shadow-sm text-xl">🥛</div>
+                    <div>
+                        <h4 class="font-bold text-slate-700 text-sm mb-1">Rond & Soepel</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed">Combinatie <strong>Calcium + Bicarbonaat</strong>. Bicarbonaat buffert zuren en maakt water zachter en romiger in de mond (bv. Chaudfontaine).</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="bg-white p-3 rounded-full shadow-sm text-xl">🌊</div>
+                    <div>
+                        <h4 class="font-bold text-slate-700 text-sm mb-1">Ziltigheid</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed">Combinatie <strong>Natrium + Chloride</strong>. Geeft een ziltig, rond mondgevoel zonder direct zout te smaken. Geeft body.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="bg-white p-3 rounded-full shadow-sm text-xl">🍋</div>
+                    <div>
+                        <h4 class="font-bold text-slate-700 text-sm mb-1">Droog & Scherp</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed">Combinatie <strong>Sulfaten + Magnesium</strong>. Versterkt de perceptie van droogte en bitterheid.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="bg-slate-50/50 p-4 border-b border-slate-100">
+                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest">Referentie Kader</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full info-table">
+                    <thead class="bg-white/40">
+                        <tr>
+                            <th>Merk</th>
+                            <th>Ca</th>
+                            <th>Mg</th>
+                            <th>Na</th>
+                            <th>SO₄</th>
+                            <th>HCO₃</th>
+                            <th>TDS</th>
+                            <th>pH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="w in referenceWaters" :key="w.name" class="hover:bg-white/40 transition">
+                            <td class="font-bold text-slate-700 font-serif">{{ w.name }}</td>
+                            <td>{{ w.Ca }}</td>
+                            <td>{{ w.Mg }}</td>
+                            <td>{{ w.Na }}</td>
+                            <td>{{ w.SO4 }}</td>
+                            <td>{{ w.HCO3 }}</td>
+                            <td>{{ w.TDS }}</td>
+                            <td>{{ w.pH }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </transition>
+
+    <transition name="fade" mode="out-in">
+    <div v-if="view === 'list'" key="list" class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
         <aside class="lg:col-span-4 xl:col-span-3 mb-8 lg:mb-0 lg:sticky lg:top-6">
             <div class="glass-sidebar">
-                <div class="flex justify-between items-end mb-4">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Filters</h3>
-                    <button v-if="activeFilterCount > 0" @click="clearFilters" class="text-[10px] text-red-400 hover:text-red-600 font-bold uppercase">Wissen</button>
-                </div>
-                <div class="mb-4">
-                    <div class="relative">
-                        <input v-model="filter.search" type="text" class="input-glass pl-8" placeholder="Zoek water...">
-                        <svg class="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                </div>
-                <div class="mb-6">
-                    <label class="text-[9px] font-bold text-slate-400 uppercase mb-1 block">Sortering</label>
-                    <select v-model="filter.sort" class="input-glass cursor-pointer w-full">
-                        <option value="score_desc">Score (Hoog &rarr; Laag)</option>
-                        <option value="score_asc">Score (Laag &rarr; Hoog)</option>
-                        <option value="name_asc">Naam (A &rarr; Z)</option>
-                        <option value="ph_asc">pH (Zuur &rarr; Basisch)</option>
-                        <option value="ph_desc">pH (Basisch &rarr; Zuur)</option>
-                        <option value="tds_asc">Droogrest (Licht &rarr; Zwaar)</option>
-                    </select>
-                </div>
+                <div class="flex justify-between items-end mb-4"><h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Filters</h3><button v-if="activeFilterCount > 0" @click="clearFilters" class="text-[10px] text-red-400 hover:text-red-600 font-bold uppercase">Wissen</button></div>
+                <div class="mb-4"><div class="relative"><input v-model="filter.search" type="text" class="input-glass pl-8" placeholder="Zoek water..."><svg class="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></div></div>
+                <div class="mb-6"><label class="text-[9px] font-bold text-slate-400 uppercase mb-1 block">Sortering</label><select v-model="filter.sort" class="input-glass cursor-pointer w-full"><option value="score_desc">Score (Hoog &rarr; Laag)</option><option value="score_asc">Score (Laag &rarr; Hoog)</option><option value="name_asc">Naam (A &rarr; Z)</option><option value="ph_asc">pH (Zuur &rarr; Basisch)</option><option value="ph_desc">pH (Basisch &rarr; Zuur)</option><option value="tds_asc">Droogrest (Licht &rarr; Zwaar)</option></select></div>
+                
                 <div class="space-y-4">
-                    <div>
-                        <span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Mondgevoel</span>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button v-for="opt in options.mondgevoel" :key="opt" @click="toggleFilter('mondgevoel', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button>
-                        </div>
-                    </div>
-                    <div>
-                        <span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Aanzet</span>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button v-for="opt in options.aanzet" :key="opt" @click="toggleFilter('aanzet', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button>
-                        </div>
-                    </div>
+                    <div v-if="uniqueCountries.length > 0"><span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Regio / Land</span><div class="flex flex-wrap gap-1.5"><button v-for="land in uniqueCountries" :key="land" @click="toggleFilter('countries', land)" :class="['filter-tag', filter.countries.includes(land) ? 'active' : 'inactive']">{{ land }}</button></div></div>
+                    <div><span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Mondgevoel</span><div class="flex flex-wrap gap-1.5"><button v-for="opt in options.mondgevoel" :key="opt" @click="toggleFilter('mondgevoel', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button></div></div>
+                    <div><span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Aanzet</span><div class="flex flex-wrap gap-1.5"><button v-for="opt in options.aanzet" :key="opt" @click="toggleFilter('aanzet', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button></div></div>
                 </div>
-                <div class="mt-6 pt-4 border-t border-slate-400/10 text-center">
-                    <p class="text-[10px] text-slate-400">{{ processedWaters.length }} resultaten</p>
-                </div>
+                
+                <div class="mt-6 pt-4 border-t border-slate-400/10 text-center"><p class="text-[10px] text-slate-400">{{ processedWaters.length }} resultaten</p></div>
             </div>
         </aside>
-
         <main class="lg:col-span-8 xl:col-span-9">
-            
             <div v-if="loading" class="text-center py-20 animate-pulse text-sky-700/50">Laden...</div>
-            
-            <div v-if="!loading && processedWaters.length === 0" class="text-center py-20 glass-card opacity-70">
-                <p class="font-serif italic text-slate-400 text-lg">Geen water gevonden.</p>
-            </div>
-
+            <div v-if="!loading && processedWaters.length === 0" class="text-center py-20 glass-card opacity-70"><p class="font-serif italic text-slate-400 text-lg">Geen water gevonden.</p></div>
             <div class="grid gap-6">
                 <div v-for="(water, index) in processedWaters" :key="index" class="glass-card p-6 sm:p-7 relative group">
                     
@@ -218,6 +281,7 @@
                                  <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400">{{ water.merk }}</span>
                                  <span class="text-slate-300">•</span>
                                  <span class="text-[9px] font-bold uppercase text-sky-700 bg-sky-100/50 border border-sky-100 px-2 py-0.5 rounded">{{ water.bronType }}</span>
+                                 <span v-if="water.land" class="text-[9px] font-bold uppercase text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded ml-1">{{ water.land }}</span>
                             </div>
                             <h2 class="text-3xl sm:text-4xl font-serif text-slate-800 leading-none">{{ water.naam }}</h2>
                         </div>
@@ -235,41 +299,9 @@
                         </div>
                     </div>
 
-                    <div v-if="water.notities" class="text-sm text-slate-600 font-serif italic mb-6 leading-relaxed opacity-90">
-                        "{{ water.notities }}"
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 mb-6">
-                         <span v-for="tag in getAllTags(water)" :key="tag" class="text-[11px] px-3 py-1 bg-white/40 text-slate-600 rounded-full border border-white/80">
-                            {{ tag }}
-                         </span>
-                    </div>
-
-                    <details class="group border-t border-slate-200/40 pt-4">
-                        <summary class="cursor-pointer flex items-center justify-between text-[10px] font-bold text-slate-400 hover:text-sky-600 uppercase tracking-widest select-none transition-colors">
-                            <span>Analyse Details</span>
-                            <div class="bg-white/50 rounded-full p-1 group-open:rotate-180 transition-transform">
-                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
-                        </summary>
-                        <div class="mt-5 animate-fade-in">
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-6 text-xs mb-6">
-                                 <div v-for="field in mineralFields" :key="field.key" class="flex flex-col">
-                                    <span class="text-[9px] uppercase font-bold text-slate-400 mb-0.5">{{ field.label }}</span>
-                                    <span class="font-mono text-sm font-medium text-slate-700">{{ water.mineralen[field.key] || '-' }}</span>
-                                 </div>
-                            </div>
-
-                            <div class="bg-white/30 rounded-lg p-3 border border-white/40 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div v-for="m in ['zuur', 'zout', 'bitter']" :key="m" class="flex items-center gap-3">
-                                    <span class="w-10 text-[9px] uppercase font-bold text-slate-400">{{ m }}</span>
-                                    <div class="flex-1 h-1 bg-white rounded-full overflow-hidden">
-                                        <div class="h-full bg-sky-500/60" :style="{width: (water[m] * 10) + '%'}"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
+                    <div v-if="water.notities" class="text-sm text-slate-600 font-serif italic mb-6 leading-relaxed opacity-90">"{{ water.notities }}"</div>
+                    <div class="flex flex-wrap gap-2 mb-6"><span v-for="tag in getAllTags(water)" :key="tag" class="text-[11px] px-3 py-1 bg-white/40 text-slate-600 rounded-full border border-white/80">{{ tag }}</span></div>
+                    <details class="group border-t border-slate-200/40 pt-4"><summary class="cursor-pointer flex items-center justify-between text-[10px] font-bold text-slate-400 hover:text-sky-600 uppercase tracking-widest select-none transition-colors"><span>Analyse Details</span><div class="bg-white/50 rounded-full p-1 group-open:rotate-180 transition-transform"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div></summary><div class="mt-5 animate-fade-in"><div class="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-6 text-xs mb-6"><div v-for="field in mineralFields" :key="field.key" class="flex flex-col"><span class="text-[9px] uppercase font-bold text-slate-400 mb-0.5">{{ field.label }}</span><span class="font-mono text-sm font-medium text-slate-700">{{ water.mineralen[field.key] || '-' }}</span></div></div><div class="bg-white/30 rounded-lg p-3 border border-white/40 grid grid-cols-1 sm:grid-cols-3 gap-4"><div v-for="m in ['zuur', 'zout', 'bitter']" :key="m" class="flex items-center gap-3"><span class="w-10 text-[9px] uppercase font-bold text-slate-400">{{ m }}</span><div class="flex-1 h-1 bg-white rounded-full overflow-hidden"><div class="h-full bg-sky-500/60" :style="{width: (water[m] * 10) + '%'}"></div></div></div></div></div></details>
                 </div>
             </div>
         </main>
@@ -286,43 +318,12 @@
     <div v-if="showCompareModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showCompareModal = false"></div>
         <div class="relative glass-modal w-full max-w-4xl rounded-2xl p-6 sm:p-10 shadow-2xl overflow-y-auto max-h-[90vh] border border-white/80">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-serif text-slate-800">Vergelijking</h2>
-                <button @click="showCompareModal = false" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
+            <div class="flex justify-between items-center mb-8"><h2 class="text-2xl font-serif text-slate-800">Vergelijking</h2><button @click="showCompareModal = false" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div>
             <div class="grid grid-cols-2 gap-8 border-t border-slate-200 pt-6">
                 <div v-for="water in compareSelection" :key="water.naam" class="space-y-6">
-                    <div class="text-center">
-                        <h3 class="text-2xl font-serif font-bold text-slate-800 mb-1">{{ water.naam }}</h3>
-                        <p class="text-xs text-slate-500 uppercase tracking-widest">{{ water.merk }}</p>
-                        <div class="mt-3 inline-block border-2 border-sky-100 rounded-full w-16 h-16 flex items-center justify-center">
-                            <span class="font-serif font-bold text-2xl text-sky-600">{{ water.score }}</span>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50/50 p-4 rounded-xl">
-                        <h4 class="text-[10px] font-bold uppercase text-slate-400 mb-3 text-center">Smaakprofiel</h4>
-                        <div class="space-y-2">
-                            <div v-for="m in ['zuur', 'zout', 'bitter']" :key="m" class="flex items-center gap-2">
-                                <span class="w-12 text-[9px] uppercase font-bold text-slate-400">{{ m }}</span>
-                                <div class="flex-1 h-1.5 bg-slate-200 rounded-full"><div class="h-full bg-sky-500" :style="{width: (water[m] * 10) + '%'}"></div></div>
-                                <span class="text-xs font-mono w-4 text-right">{{ water[m] }}</span>
-                            </div>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <div class="flex flex-wrap justify-center gap-1">
-                                <span v-for="tag in getAllTags(water)" :key="tag" class="text-[10px] px-2 py-0.5 bg-white border border-slate-200 rounded text-slate-600">{{ tag }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-[10px] font-bold uppercase text-slate-400 mb-3 text-center">Samenstelling</h4>
-                        <div class="divide-y divide-slate-100 text-xs">
-                            <div v-for="field in mineralFields" :key="field.key" class="flex justify-between py-2 px-2 hover:bg-sky-50/50 rounded">
-                                <span class="text-slate-500">{{ field.label }}</span>
-                                <span class="font-mono font-medium">{{ water.mineralen[field.key] || '-' }}</span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="text-center"><h3 class="text-2xl font-serif font-bold text-slate-800 mb-1">{{ water.naam }}</h3><p class="text-xs text-slate-500 uppercase tracking-widest">{{ water.merk }}</p><div class="mt-3 inline-block border-2 border-sky-100 rounded-full w-16 h-16 flex items-center justify-center"><span class="font-serif font-bold text-2xl text-sky-600">{{ water.score }}</span></div></div>
+                    <div class="bg-slate-50/50 p-4 rounded-xl"><h4 class="text-[10px] font-bold uppercase text-slate-400 mb-3 text-center">Smaakprofiel</h4><div class="space-y-2"><div v-for="m in ['zuur', 'zout', 'bitter']" :key="m" class="flex items-center gap-2"><span class="w-12 text-[9px] uppercase font-bold text-slate-400">{{ m }}</span><div class="flex-1 h-1.5 bg-slate-200 rounded-full"><div class="h-full bg-sky-500" :style="{width: (water[m] * 10) + '%'}"></div></div><span class="text-xs font-mono w-4 text-right">{{ water[m] }}</span></div></div><div class="mt-4 text-center"><div class="flex flex-wrap justify-center gap-1"><span v-for="tag in getAllTags(water)" :key="tag" class="text-[10px] px-2 py-0.5 bg-white border border-slate-200 rounded text-slate-600">{{ tag }}</span></div></div></div>
+                    <div><h4 class="text-[10px] font-bold uppercase text-slate-400 mb-3 text-center">Samenstelling</h4><div class="divide-y divide-slate-100 text-xs"><div v-for="field in mineralFields" :key="field.key" class="flex justify-between py-2 px-2 hover:bg-sky-50/50 rounded"><span class="text-slate-500">{{ field.label }}</span><span class="font-mono font-medium">{{ water.mineralen[field.key] || '-' }}</span></div></div></div>
                 </div>
             </div>
         </div>
@@ -333,89 +334,25 @@
         <h2 class="text-2xl font-serif text-slate-800 mb-8">Nieuwe Proeverij</h2>
         <form @submit.prevent="generateJSON" class="space-y-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                    <label class="label">Naam</label>
-                    <input v-model="form.naam" type="text" class="input-glass font-serif text-lg" placeholder="Bijv. Acqua Panna">
-                </div>
-                <div>
-                    <label class="label">Merk</label>
-                    <input v-model="form.merk" type="text" class="input-glass" placeholder="Bijv. San Pellegrino">
-                </div>
-                <div>
-                    <label class="label">Type</label>
-                    <select v-model="form.bronType" class="input-glass cursor-pointer">
-                        <option>Fles (Mineraal)</option><option>Fles (Bron)</option><option>Kraan (Thuis)</option><option>Kraan (Horeca)</option><option>Natuurlijke Bron</option></select>
-                    </div>
-                    <div>
-                        <label class="label">Score (0-10)</label>
-                        <input v-model.number="form.score" type="number" step="0.1" max="10" class="input-glass font-serif text-lg font-bold text-sky-700">
-                    </div>
-                </div>
-                <div>
-                    <label class="label">Notitie</label>
-                    <textarea v-model="form.notities" rows="2" class="input-glass font-serif italic" placeholder="Beschrijf de ervaring..."></textarea>
-                </div>
-                <hr class="border-slate-200/50">
-                <div>
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Balans</h3>
-                    <div class="bg-white/40 p-5 rounded-xl border border-white/60 space-y-6">
-                        <div v-for="metric in ['zuur', 'zout', 'bitter']" :key="metric" class="flex items-center gap-4">
-                            <label class="w-14 text-[10px] uppercase font-bold text-slate-400">{{ metric }}</label>
-                            <input type="range" v-model.number="form[metric]" min="0" max="10" step="1" class="flex-1">
-                            <span class="w-6 text-right font-mono text-sm text-sky-700 font-bold">{{ form[metric] }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-5">
-                    <div>
-                        <label class="label mb-2">Mondgevoel</label>
-                        <div class="flex flex-wrap gap-2">
-                            <button type="button" v-for="opt in options.mondgevoel" @click="toggleTag('mondgevoel', opt)" :class="form.mondgevoel.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="label mb-2">Aanzet</label>
-                        <div class="flex flex-wrap gap-2">
-                            <button type="button" v-for="opt in options.aanzet" @click="toggleTag('aanzet', opt)" :class="form.aanzet.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="label mb-2">Nasmaak Lengte</label>
-                            <select v-model="form.nasmaak_lengte" class="input-glass cursor-pointer">
-                                <option v-for="opt in options.nasmaak_lengte" :value="opt">{{ opt }}</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="label mb-2">Nasmaak Karakter</label>
-                            <div class="flex flex-wrap gap-2">
-                                <button type="button" v-for="opt in options.nasmaak_karakter" @click="toggleTag('nasmaak_karakter', opt)" :class="form.nasmaak_karakter.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-blue-50/70 p-6 rounded-xl border border-blue-100 shadow-sm">
-                    <h3 class="text-sm font-bold text-blue-900 mb-6 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                Samenstelling (mg/L & pH)</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    <div v-for="min in mineralFields" :key="min.key" class="flex flex-col">
-                        <label class="mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">{{ min.label }} 
-                            <span class="text-blue-300 ml-0.5">({{ min.key }})</span>
-                        </label>
-                        <input v-model="form.mineralen[min.key]" type="text" class="input-solid" placeholder="-">
-                    </div>
-                </div>
+                <div><label class="label">Naam</label><input v-model="form.naam" type="text" class="input-glass" placeholder="Bijv. Acqua Panna"></div>
+                <div><label class="label">Merk</label><input v-model="form.merk" type="text" class="input-glass" placeholder="Bijv. San Pellegrino"></div>
             </div>
+
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 sm:col-span-4"><label class="label">Type</label><select v-model="form.bronType" class="input-glass cursor-pointer"><option>Fles (Mineraal)</option><option>Fles (Bron)</option><option>Kraan (Thuis)</option><option>Kraan (Horeca)</option><option>Natuurlijke Bron</option></select></div>
+                <div class="col-span-12 sm:col-span-5"><label class="label">Land / Regio</label><input v-model="form.land" type="text" class="input-glass" placeholder="Bijv. Italië"></div>
+                <div class="col-span-12 sm:col-span-3"><label class="label">Score</label><input v-model.number="form.score" type="number" step="0.1" max="10" class="input-glass font-bold text-sky-700 text-center"></div>
+            </div>
+
+             <div><label class="label">Notitie</label><textarea v-model="form.notities" rows="2" class="input-glass italic" placeholder="Beschrijf de ervaring..."></textarea></div>
+            <hr class="border-slate-200/50">
+            <div><h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Balans</h3><div class="bg-white/40 p-5 rounded-xl border border-white/60 space-y-6"><div v-for="metric in ['zuur', 'zout', 'bitter']" :key="metric" class="flex items-center gap-4"><label class="w-14 text-[10px] uppercase font-bold text-slate-400">{{ metric }}</label><input type="range" v-model.number="form[metric]" min="0" max="10" step="1" class="flex-1"><span class="w-6 text-right font-mono text-sm text-sky-700 font-bold">{{ form[metric] }}</span></div></div></div>
+            <div class="space-y-5"><div><label class="label mb-2">Mondgevoel</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.mondgevoel" @click="toggleTag('mondgevoel', opt)" :class="form.mondgevoel.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div><label class="label mb-2">Aanzet</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.aanzet" @click="toggleTag('aanzet', opt)" :class="form.aanzet.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="label mb-2">Nasmaak Lengte</label><select v-model="form.nasmaak_lengte" class="input-glass cursor-pointer"><option v-for="opt in options.nasmaak_lengte" :value="opt">{{ opt }}</option></select></div><div><label class="label mb-2">Nasmaak Karakter</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.nasmaak_karakter" @click="toggleTag('nasmaak_karakter', opt)" :class="form.nasmaak_karakter.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div></div></div>
+            
+            <div class="bg-blue-50/70 p-6 rounded-xl border border-blue-100 shadow-sm"><h3 class="text-sm font-bold text-blue-900 mb-6 flex items-center"><svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>Samenstelling (mg/L & pH)</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-4"><div v-for="min in mineralFields" :key="min.key" class="flex flex-col"><label class="mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">{{ min.label }} <span class="text-blue-300 ml-0.5">({{ min.key }})</span></label><input v-model="form.mineralen[min.key]" type="text" class="input-solid" placeholder="-"></div></div></div>
             <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-400/30 transition-all transform hover:-translate-y-0.5 text-xs tracking-widest uppercase">Genereer JSON Code</button>
         </form>
-        <div v-if="generatedJson" class="mt-8 bg-slate-800 rounded-xl p-5 relative border border-slate-700 shadow-2xl">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Kopieer naar data.json</span>
-                <button @click="copyToClipboard" class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition">{{ copyStatus }}</button>
-            </div>
-            <pre class="text-emerald-400 font-mono text-[10px] leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-40">{{ generatedJson }}</pre>
-        </div>
+        <div v-if="generatedJson" class="mt-8 bg-slate-800 rounded-xl p-5 relative border border-slate-700 shadow-2xl"><div class="flex justify-between items-center mb-2"><span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Kopieer naar data.json</span><button @click="copyToClipboard" class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition">{{ copyStatus }}</button></div><pre class="text-emerald-400 font-mono text-[10px] leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-40">{{ generatedJson }}</pre></div>
     </div>
     </transition>
 </div>
@@ -428,14 +365,39 @@
         data() {
             return {
                 view: 'list', loading: true, waters: [], generatedJson: null, copyStatus: 'KOPIEER', showCompareModal: false, compareSelection: [],
-                filter: { search: '', sort: 'score_desc', tags: [] },
+                filter: { search: '', sort: 'score_desc', tags: [], countries: [] },
+                
+                // TDS is nu toegevoegd aan mineralInfo als laatste item
+                mineralInfo: [
+                    { name: 'Calcium', chem: 'Ca', effect: 'Krijt & Structuur', thresholds: { '100+': 'Droog, Krijtachtig', '20-80': 'Zacht Mineraal', '<10': 'Extreem Zacht' } },
+                    { name: 'Magnesium', chem: 'Mg', effect: 'Bitter & Zilt', thresholds: { '30+': 'Zilt/Bitter nuance', '5-20': 'Fris, Mild', '<5': 'Neutraal' } },
+                    { name: 'Bicarbonaat', chem: 'HCO3', effect: 'Romigheid', thresholds: { '250+': 'Rond, Zoetig', '100-250': 'Evenwichtig', '<20': 'Strak, Dun' } },
+                    { name: 'Sulfaat', chem: 'SO4', effect: 'Droogheid', thresholds: { '200+': 'Strak, Bittertje', '50-200': 'Modern Fris', '<30': 'Zacht' } },
+                    { name: 'Natrium', chem: 'Na', effect: 'Ziltigheid', thresholds: { '50+': 'Duidelijk Zilt', '10-40': 'Subtiel', '<10': 'Neutraal' } },
+                    // TDS als 6e item:
+                    { name: 'Droogrest (TDS)', chem: 'Totaal', effect: 'Gewicht & Body', thresholds: { '0-50': 'Super Laag (Licht)', '50-250': 'Laag (Fris)', '250-800': 'Medium (Body)', '800-1500': 'Hoog (Aanwezig)', '1500+': 'Zeer Hoog (Zwaar)' } }
+                ],
+                referenceWaters: [
+                    { name: 'Acqua Panna', Ca: '32', Mg: '6.7', Na: '7', SO4: '23', HCO3: '107', TDS: '142', pH: '8.0' },
+                    { name: 'Chaudfontaine', Ca: '65', Mg: '18', Na: '44', SO4: '40', HCO3: '305', TDS: '385', pH: '7.6' },
+                    { name: 'Sourcy', Ca: '49', Mg: '6', Na: '10', SO4: '10', HCO3: '180', TDS: '272', pH: '7.8' },
+                    { name: 'Spa Reine', Ca: '4.5', Mg: '1.3', Na: '3', SO4: '4', HCO3: '11', TDS: '38', pH: '6.0' },
+                    { name: 'Vittel', Ca: '240', Mg: '42', Na: '5', SO4: '400', HCO3: '384', TDS: '1084', pH: '7.3' }
+                ],
                 mineralFields: [ { key: 'Ca', label: 'Calcium' }, { key: 'Mg', label: 'Magnesium' }, { key: 'Na', label: 'Natrium' }, { key: 'SO4', label: 'Sulfaat' }, { key: 'HCO3', label: 'Bicarbonaat' }, { key: 'TDS', label: 'Droogrest' }, { key: 'pH', label: 'pH' }, { key: 'Cl', label: 'Chloride' }, { key: 'SiO2', label: 'Silica' }, { key: 'K', label: 'Kalium' }, { key: 'NO3', label: 'Nitraat' } ],
                 options: { mondgevoel: ['Zacht', 'Romig', 'Vol', 'Strak', 'Droog', 'Krijtachtig'], aanzet: ['Zacht', 'Rond', 'Fris', 'Zuur', 'Strak'], nasmaak_lengte: ['Kort', 'Medium', 'Lang'], nasmaak_karakter: ['Droog', 'Romig', 'Mineraal', 'Kalkachtig', 'Zuur', 'Neutraal', 'Bitter'] },
-                form: { naam: '', merk: '', bronType: 'Fles (Mineraal)', score: 7.5, zuur: 5, zout: 2, bitter: 1, mondgevoel: [], aanzet: [], nasmaak_lengte: 'Medium', nasmaak_karakter: [], notities: '', mineralen: { pH: '', TDS: '', Ca: '', Mg: '', Na: '', K: '', HCO3: '', SO4: '', Cl: '', SiO2: '', NO3: '' } }
+                form: { naam: '', merk: '', bronType: 'Fles (Mineraal)', land: '', score: 7.5, zuur: 5, zout: 2, bitter: 1, mondgevoel: [], aanzet: [], nasmaak_lengte: 'Medium', nasmaak_karakter: [], notities: '', mineralen: { pH: '', TDS: '', Ca: '', Mg: '', Na: '', K: '', HCO3: '', SO4: '', Cl: '', SiO2: '', NO3: '' } }
             }
         },
         computed: {
-            activeFilterCount() { return this.filter.tags.length; },
+            activeFilterCount() { return this.filter.tags.length + this.filter.countries.length; },
+            
+            // Feature 3: Automatische lijst van landen voor filter
+            uniqueCountries() {
+                if (!this.waters) return [];
+                const lands = this.waters.map(w => w.land).filter(l => l);
+                return [...new Set(lands)].sort();
+            },
             processedWaters() {
                 let result = [...this.waters];
                 if (this.filter.search) { const q = this.filter.search.toLowerCase(); result = result.filter(w => w.naam.toLowerCase().includes(q) || w.merk.toLowerCase().includes(q)); }
@@ -445,6 +407,9 @@
                         return this.filter.tags.some(tag => waterTags.includes(tag));
                     });
                 }
+                // Filteren op Land
+                if (this.filter.countries.length > 0) { result = result.filter(w => this.filter.countries.includes(w.land)); }
+
                 result.sort((a, b) => {
                     const valA = a; const valB = b;
                     switch(this.filter.sort) {
@@ -460,12 +425,21 @@
                 return result;
             }
         },
-        mounted() { fetch('data.json').then(r => r.ok ? r.json() : []).then(data => { this.waters = data; this.loading = false; }).catch(() => { this.waters = []; this.loading = false; }); },
+        mounted() { fetch('./data.json').then(r => r.ok ? r.json() : []).then(data => { this.waters = data; this.loading = false; }).catch(() => { this.waters = []; this.loading = false; }); },
         methods: {
-            toggleView() { this.view = this.view === 'list' ? 'add' : 'list'; this.generatedJson = null; this.compareSelection = []; this.showCompareModal = false; },
+            toggleView() { 
+                if (this.view === 'info') { this.view = 'list'; }
+                else { this.view = this.view === 'list' ? 'add' : 'list'; }
+                this.generatedJson = null; this.compareSelection = []; this.showCompareModal = false; 
+            },
             toggleTag(category, value) { const index = this.form[category].indexOf(value); if (index === -1) this.form[category].push(value); else this.form[category].splice(index, 1); },
-            toggleFilter(category, value) { const index = this.filter.tags.indexOf(value); if (index === -1) this.filter.tags.push(value); else this.filter.tags.splice(index, 1); },
-            clearFilters() { this.filter.tags = []; this.filter.search = ''; },
+            
+            toggleFilter(category, value) { 
+                let targetArray = category === 'countries' ? this.filter.countries : this.filter.tags;
+                const index = targetArray.indexOf(value); 
+                if (index === -1) targetArray.push(value); else targetArray.splice(index, 1); 
+            },
+            clearFilters() { this.filter.tags = []; this.filter.countries = []; this.filter.search = ''; },
             hasTags(val) { return Array.isArray(val) ? val.length > 0 : (val && val.length > 0); },
             formatTags(val) { return Array.isArray(val) ? val.join(', ') : val; },
             getAllTags(water) { let tags = []; if (Array.isArray(water.mondgevoel)) tags.push(...water.mondgevoel); if (Array.isArray(water.aanzet)) tags.push(...water.aanzet); if (water.nasmaak_lengte) tags.push(water.nasmaak_lengte + " afdronk"); if (Array.isArray(water.nasmaak_karakter)) tags.push(...water.nasmaak_karakter); return tags; },
