@@ -1,0 +1,71 @@
+[
+{
+    "naam": "Acqua Panna",
+    "merk": "San Pellegrino",
+    "bronType": "Fles (Mineraal)",
+    "score": 8.5,
+    "zuur": 1,
+    "zout": 2,
+    "bitter": 0,
+    "mondgevoel": [
+        "Romig"
+    ],
+    "aanzet": [
+        "Zacht"
+    ],
+    "nasmaak_lengte": "Medium",
+    "nasmaak_karakter": [
+        "Mineraal"
+    ],
+    "notities": "Door de zachte aanzet zeer goed te drinken. Met de mooie balans tussen Calcium en Sulfaat, en een mooie hoeveelheid Bicarbonaat, gaat dit water richting perfectie.",
+    "mineralen": {
+        "pH": "8",
+        "TDS": "142",
+        "Ca": "32.2",
+        "Mg": "6.7",
+        "Na": " 7.0",
+        "K": " 0.9",
+        "HCO3": " 107",
+        "SO4": "23.0",
+        "Cl": " 8.2",
+        "SiO2": " 7.1",
+        "NO3": " 2.4"
+    },
+    "datum": "2025-11-25"
+},
+{
+    "naam": "Spa Reine",
+    "merk": "Spa",
+    "bronType": "Fles (Mineraal)",
+    "score": 3.0,
+    "zuur": 6,
+    "zout": 3,
+    "bitter": 2,
+    "mondgevoel": [
+        "Strak"
+    ],
+    "aanzet": [
+        "Zuur"
+    ],
+    "nasmaak_lengte": "Kort",
+    "nasmaak_karakter": [
+        "Kalkachtig",
+        "Zuur"
+    ],
+    "notities": "Spa Reine is een water met een laag mineraalgehalte. Dit zorgt voor een vlakke smaakbeleving. Door de lage pH-waarde (die niet wordt gebalanceerd door een hogere Bicarbonaat) smaakt het zuur, wat lekker kan zijn bij zoute patat, maar minder geschikt is om zo te drinken.",
+    "mineralen": {
+        "pH": "6",
+        "TDS": "38",
+        "Ca": "5",
+        "Mg": "2",
+        "Na": "3",
+        "K": "0.5",
+        "HCO3": "17",
+        "SO4": "4",
+        "Cl": "5",
+        "SiO2": "7",
+        "NO3": "1.5"
+    },
+    "datum": "2025-11-25"
+}
+]

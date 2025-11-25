@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watermerk: Rate Water</title>
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600" rel="stylesheet">
+
+    <style>
+        /* ACHTERGROND */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: radial-gradient(circle at top left, #f0f9ff, #e0f2fe, #bae6fd);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #334155;
+        }
+
+        .font-serif { 
+            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+        }
+
+        /* DE KAART */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.12);
+            border-color: #fff;
+        }
+
+        /* GHOST COMPARE BUTTON (Inline versie) */
+        .ghost-compare {
+            opacity: 0; /* Standaard onzichtbaar */
+            transition: all 0.3s ease;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem; /* Ruimte tot de druppel */
+        }
+        .ghost-compare:hover {
+            background-color: rgba(255,255,255,0.6);
+            color: #0ea5e9;
+        }
+        /* Laat zien bij hover over de kaart */
+        .glass-card:hover .ghost-compare {
+            opacity: 1;
+        }
+        /* Laat zien als actief (geselecteerd) */
+        .ghost-compare.active {
+            opacity: 1;
+            color: #0ea5e9; /* Sky Blue */
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(14, 165, 233, 0.2);
+        }
+        /* Op mobiel iets zichtbaar maken */
+        @media (max-width: 1024px) {
+            .ghost-compare { opacity: 0.3; }
+        }
+
+        /* DE SIDEBAR */
+        .glass-sidebar {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+        /* VERGELIJK MODAL */
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        /* DE SCORE DRUPPEL */
+        .water-drop {
+            width: 3.8rem; 
+            height: 3.8rem;
+            background: linear-gradient(135deg, #e0f7fa, #bae6fd);
+            border: 2px solid #ffffff;
+            border-radius: 0 50% 50% 50%;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 6px rgba(255,255,255,0.9), 0 8px 20px -4px rgba(14, 165, 233, 0.4);
+        }
+        .water-drop span {
+            transform: rotate(-45deg);
+        }
+
+        /* INPUTS */
+        .input-glass { width: 100%; background-color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 0.5rem; padding: 0.6rem 1rem; font-size: 0.85rem; color: #334155; outline: none; transition: all 0.2s; }
+        .input-glass:focus { background-color: white; border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
+        select.input-glass { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.2em 1.2em; padding-right: 2.5rem; }
+
+        /* SLIDERS */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #cbd5e1 !important; border-radius: 3px; cursor: pointer; border: 1px solid rgba(255,255,255,0.5); }
+        input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #0ea5e9; border: 2px solid #ffffff; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; }
+        /* Firefox support */
+        input[type=range]::-moz-range-track { width: 100%; height: 6px; background: #cbd5e1 !important; border-radius: 3px; cursor: pointer; }
+        input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border: 2px solid #ffffff; border-radius: 50%; background: #0ea5e9; cursor: pointer; }
+
+        /* MINERALEN INPUT */
+        .input-solid { width: 100%; background-color: #ffffff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 10px; font-size: 0.875rem; font-family: 'Inter', monospace; color: #0c4a6e; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-solid:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .input-solid::placeholder { color: #cbd5e1; }
+
+        /* FILTER TAGS */
+        .filter-tag { cursor: pointer; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid; transition: all 0.2s; }
+        .filter-tag.active { background-color: #0ea5e9; color: white; border-color: #0ea5e9; }
+        .filter-tag.inactive { background-color: transparent; color: #64748b; border-color: #cbd5e1; }
+        .filter-tag.inactive:hover { border-color: #0ea5e9; color: #0ea5e9; background-color: white; }
+
+        /* COMPARE FLOATING BUTTON */
+        .compare-float { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.9); color: white; padding: 0.75rem 1.5rem; border-radius: 9999px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); backdrop-filter: blur(4px); display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: all 0.3s; z-index: 40; }
+        .compare-float:hover { transform: translateX(-50%) translateY(-2px); background: black; }
+
+        pre::-webkit-scrollbar { height: 4px; }
+        pre::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 2px; }
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+        .fade-enter-from, .fade-leave-to { opacity: 0; }
+    </style>
+</head>
+<body class="antialiased selection:bg-sky-200 selection:text-sky-900">
+
+<div id="app" class="max-w-5xl mx-auto p-4 pb-24">
+
+    <header class="flex justify-between items-center mb-10 pt-6 max-w-5xl mx-auto">
+        <div>
+            <h1 class="text-3xl font-serif font-bold text-slate-800 tracking-tight">Watermerk<span class="text-sky-500">.</span></h1>
+            <p class="text-xs text-slate-500 uppercase tracking-widest font-medium mt-1 ml-0.5 opacity-80">L'eau de Merijn</p>
+        </div>
+        <button 
+            @click="toggleView" 
+            class="text-xs font-bold uppercase tracking-widest text-sky-700 hover:text-sky-900 transition px-5 py-2.5 bg-white/40 hover:bg-white backdrop-blur-sm border border-white rounded-full shadow-sm hover:shadow-md">
+            {{ view === 'list' ? '+ Nieuw' : 'Annuleren' }}
+        </button>
+    </header>
+
+    <transition name="fade" mode="out-in">
+    <div v-if="view === 'list'" key="list" class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
+        
+        <aside class="lg:col-span-4 xl:col-span-3 mb-8 lg:mb-0 lg:sticky lg:top-6">
+            <div class="glass-sidebar">
+                <div class="flex justify-between items-end mb-4">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Filters</h3>
+                    <button v-if="activeFilterCount > 0" @click="clearFilters" class="text-[10px] text-red-400 hover:text-red-600 font-bold uppercase">Wissen</button>
+                </div>
+                <div class="mb-4">
+                    <div class="relative">
+                        <input v-model="filter.search" type="text" class="input-glass pl-8" placeholder="Zoek water...">
+                        <svg class="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="text-[9px] font-bold text-slate-400 uppercase mb-1 block">Sortering</label>
+                    <select v-model="filter.sort" class="input-glass cursor-pointer w-full">
+                        <option value="score_desc">Score (Hoog &rarr; Laag)</option>
+                        <option value="score_asc">Score (Laag &rarr; Hoog)</option>
+                        <option value="name_asc">Naam (A &rarr; Z)</option>
+                        <option value="ph_asc">pH (Zuur &rarr; Basisch)</option>
+                        <option value="ph_desc">pH (Basisch &rarr; Zuur)</option>
+                        <option value="tds_asc">Droogrest (Licht &rarr; Zwaar)</option>
+                    </select>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Mondgevoel</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button v-for="opt in options.mondgevoel" :key="opt" @click="toggleFilter('mondgevoel', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-[9px] block mb-2 text-slate-400 font-bold uppercase">Aanzet</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button v-for="opt in options.aanzet" :key="opt" @click="toggleFilter('aanzet', opt)" :class="['filter-tag', filter.tags.includes(opt) ? 'active' : 'inactive']">{{ opt }}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-400/10 text-center">
+                    <p class="text-[10px] text-slate-400">{{ processedWaters.length }} resultaten</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="lg:col-span-8 xl:col-span-9">
+            
+            <div v-if="loading" class="text-center py-20 animate-pulse text-sky-700/50">Laden...</div>
+            
+            <div v-if="!loading && processedWaters.length === 0" class="text-center py-20 glass-card opacity-70">
+                <p class="font-serif italic text-slate-400 text-lg">Geen water gevonden.</p>
+            </div>
+
+            <div class="grid gap-6">
+                <div v-for="(water, index) in processedWaters" :key="index" class="glass-card p-6 sm:p-7 relative group">
+                    
+                    <div class="flex justify-between items-start mb-5 pr-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1.5">
+                                 <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400">{{ water.merk }}</span>
+                                 <span class="text-slate-300">•</span>
+                                 <span class="text-[9px] font-bold uppercase text-sky-700 bg-sky-100/50 border border-sky-100 px-2 py-0.5 rounded">{{ water.bronType }}</span>
+                            </div>
+                            <h2 class="text-3xl sm:text-4xl font-serif text-slate-800 leading-none">{{ water.naam }}</h2>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <button @click.stop="toggleCompare(water)" 
+                                :class="['ghost-compare', compareSelection.includes(water) ? 'active' : '']"
+                                title="Vergelijk dit water">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                            </button>
+
+                            <div class="water-drop flex-shrink-0">
+                                <span class="font-serif font-bold text-xl text-sky-800">{{ water.score }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="water.notities" class="text-sm text-slate-600 font-serif italic mb-6 leading-relaxed opacity-90">
+                        "{{ water.notities }}"
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-6">
+                         <span v-for="tag in getAllTags(water)" :key="tag" class="text-[11px] px-3 py-1 bg-white/40 text-slate-600 rounded-full border border-white/80">
+                            {{ tag }}
+                         </span>
+                    </div>
+
+                    <details class="group border-t border-slate-200/40 pt-4">
+                        <summary class="cursor-pointer flex items-center justify-between text-[10px] font-bold text-slate-400 hover:text-sky-600 uppercase tracking-widest select-none transition-colors">
+                            <span>Analyse Details</span>
+                            <div class="bg-white/50 rounded-full p-1 group-open:rotate-180 transition-transform">
+                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </summary>
+                        <div class="mt-5 animate-fade-in">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-6 text-xs mb-6">
+                                 <div v-for="field in mineralFields" :key="field.key" class="flex flex-col">
+                                    <span class="text-[9px] uppercase font-bold text-slate-400 mb-0.5">{{ field.label }}</span>
+                                    <span class="font-mono text-sm font-medium text-slate-700">{{ water.mineralen[field.key] || '-' }}</span>
+                                 </div>
+                            </div>
+
+                            <div class="bg-white/30 rounded-lg p-3 border border-white/40 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div v-for="m in ['zuur', 'zout', 'bitter']" :key="m" class="flex items-center gap-3">
+                                    <span class="w-10 text-[9px] uppercase font-bold text-slate-400">{{ m }}</span>
+                                    <div class="flex-1 h-1 bg-white rounded-full overflow-hidden">
+                                        <div class="h-full bg-sky-500/60" :style="{width: (water[m] * 10) + '%'}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </main>
+    </div>
+    </transition>
+
+    <transition name="fade">
+        <div v-if="compareSelection.length > 0 && view === 'list'" class="compare-float" @click="showCompareModal = true">
+            <span class="text-xs font-bold uppercase tracking-widest">Vergelijk</span>
+            <span class="bg-white text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-full">{{ compareSelection.length }}</span>
+        </div>
+    </transition>
+
+    <div v-if="showCompareModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showCompareModal = false"></div>
+        <div class="relative glass-modal w-full max-w-4xl rounded-2xl p-6 sm:p-10 shadow-2xl overflow-y-auto max-h-[90vh] border border-white/80">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-serif text-slate-800">Vergelijking</h2>
+                <button @click="showCompareModal = false" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="grid grid-cols-2 gap-8 border-t border-slate-200 pt-6">
+                <div v-for="water in compareSelection" :key="water.naam" class="space-y-6">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-serif font-bold text-slate-800 mb-1">{{ water.naam }}</h3>
+                        <p class="text-xs text-slate-500 uppercase tracking-widest">{{ water.merk }}</p>
+                        <div class="mt-3 inline-block border-2 border-sky-100 rounded-full w-16 h-16 flex items-center justify-center">
+                            <span class="font-serif font-bold text-2xl text-sky-600">{{ water.score }}</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50/50 p-4 rounded-xl">
+                        <h4 class="text-[10px] font-bold uppercase text-slate-400 mb-3 text-center">Smaakprofiel</h4>
+                        <div class="space-y-2">
+                            <div v-for="m in ['zuur', 'zout', 'bitter']" :key="m" class="flex items-center gap-2">
+                                <span class="w-12 text-[9px] uppercase font-bold text-slate-400">{{ m }}</span>
+                                <div class="flex-1 h-1.5 bg-slate-200 rounded-full"><div class="h-full bg-sky-500" :style="{width: (water[m] * 10) + '%'}"></div></div>
+                                <span class="text-xs font-mono w-4 text-right">{{ water[m] }}</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <div class="flex flex-wrap justify-center gap-1">
+                                <span v-for="tag in getAllTags(water)" :key="tag" class="text-[10px] px-2 py-0.5 bg-white border border-slate-200 rounded text-slate-600">{{ tag }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-bold uppercase text-slate-400 mb-3 text-center">Samenstelling</h4>
+                        <div class="divide-y divide-slate-100 text-xs">
+                            <div v-for="field in mineralFields" :key="field.key" class="flex justify-between py-2 px-2 hover:bg-sky-50/50 rounded">
+                                <span class="text-slate-500">{{ field.label }}</span>
+                                <span class="font-mono font-medium">{{ water.mineralen[field.key] || '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <transition name="fade" mode="out-in">
+    <div v-if="view === 'add'" key="add" class="max-w-3xl mx-auto glass-card p-6 sm:p-8">
+        <h2 class="text-2xl font-serif text-slate-800 mb-8">Nieuwe Proeverij</h2>
+        <form @submit.prevent="generateJSON" class="space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><div><label class="label">Naam</label><input v-model="form.naam" type="text" class="input-glass font-serif text-lg" placeholder="Bijv. Acqua Panna"></div><div><label class="label">Merk</label><input v-model="form.merk" type="text" class="input-glass" placeholder="Bijv. San Pellegrino"></div><div><label class="label">Type</label><select v-model="form.bronType" class="input-glass cursor-pointer"><option>Fles (Mineraal)</option><option>Fles (Bron)</option><option>Kraan (Thuis)</option><option>Kraan (Horeca)</option><option>Natuurlijke Bron</option></select></div><div><label class="label">Score (0-10)</label><input v-model.number="form.score" type="number" step="0.1" max="10" class="input-glass font-serif text-lg font-bold text-sky-700"></div></div><div><label class="label">Notitie</label><textarea v-model="form.notities" rows="2" class="input-glass font-serif italic" placeholder="Beschrijf de ervaring..."></textarea></div><hr class="border-slate-200/50"><div><h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Balans</h3><div class="bg-white/40 p-5 rounded-xl border border-white/60 space-y-6"><div v-for="metric in ['zuur', 'zout', 'bitter']" :key="metric" class="flex items-center gap-4"><label class="w-14 text-[10px] uppercase font-bold text-slate-400">{{ metric }}</label><input type="range" v-model.number="form[metric]" min="0" max="10" step="1" class="flex-1"><span class="w-6 text-right font-mono text-sm text-sky-700 font-bold">{{ form[metric] }}</span></div></div></div><div class="space-y-5"><div><label class="label mb-2">Mondgevoel</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.mondgevoel" @click="toggleTag('mondgevoel', opt)" :class="form.mondgevoel.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div><label class="label mb-2">Aanzet</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.aanzet" @click="toggleTag('aanzet', opt)" :class="form.aanzet.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="label mb-2">Nasmaak Lengte</label><select v-model="form.nasmaak_lengte" class="input-glass cursor-pointer"><option v-for="opt in options.nasmaak_lengte" :value="opt">{{ opt }}</option></select></div><div><label class="label mb-2">Nasmaak Karakter</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.nasmaak_karakter" @click="toggleTag('nasmaak_karakter', opt)" :class="form.nasmaak_karakter.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div></div></div><div class="bg-blue-50/70 p-6 rounded-xl border border-blue-100 shadow-sm"><h3 class="text-sm font-bold text-blue-900 mb-6 flex items-center"><svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M10 2h4v6.29L19.75 19.18c.54 1.08-.25 2.32-1.46 2.32H5.71c-1.21 0-2-1.24-1.46-2.32L9 8.29V2z"/></svg>Samenstelling (mg/L & pH)</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-4"><div v-for="min in mineralFields" :key="min.key" class="flex flex-col"><label class="mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">{{ min.label }} <span class="text-blue-300 ml-0.5">({{ min.key }})</span></label><input v-model="form.mineralen[min.key]" type="text" class="input-solid" placeholder="-"></div></div></div><button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-400/30 transition-all transform hover:-translate-y-0.5 text-xs tracking-widest uppercase">Genereer JSON Code</button>
+        </form>
+        <div v-if="generatedJson" class="mt-8 bg-slate-800 rounded-xl p-5 relative border border-slate-700 shadow-2xl"><div class="flex justify-between items-center mb-2"><span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Kopieer naar data.json</span><button @click="copyToClipboard" class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition">{{ copyStatus }}</button></div><pre class="text-emerald-400 font-mono text-[10px] leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-40">{{ generatedJson }}</pre></div>
+    </div>
+    </transition>
+</div>
+
+<style> .label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 5px; } </style>
+
+<script>
+    const { createApp } = Vue
+    createApp({
+        data() {
+            return {
+                view: 'list', loading: true, waters: [], generatedJson: null, copyStatus: 'KOPIEER', showCompareModal: false, compareSelection: [],
+                filter: { search: '', sort: 'score_desc', tags: [] },
+                mineralFields: [ { key: 'Ca', label: 'Calcium' }, { key: 'Mg', label: 'Magnesium' }, { key: 'Na', label: 'Natrium' }, { key: 'SO4', label: 'Sulfaat' }, { key: 'HCO3', label: 'Bicarbonaat' }, { key: 'TDS', label: 'Droogrest' }, { key: 'pH', label: 'pH' }, { key: 'Cl', label: 'Chloride' }, { key: 'SiO2', label: 'Silica' }, { key: 'K', label: 'Kalium' }, { key: 'NO3', label: 'Nitraat' } ],
+                options: { mondgevoel: ['Zacht', 'Romig', 'Vol', 'Strak', 'Droog', 'Krijtachtig'], aanzet: ['Zacht', 'Rond', 'Fris', 'Zuur', 'Strak'], nasmaak_lengte: ['Kort', 'Medium', 'Lang'], nasmaak_karakter: ['Droog', 'Romig', 'Mineraal', 'Kalkachtig', 'Zuur', 'Neutraal', 'Bitter'] },
+                form: { naam: '', merk: '', bronType: 'Fles (Mineraal)', score: 7.5, zuur: 5, zout: 2, bitter: 1, mondgevoel: [], aanzet: [], nasmaak_lengte: 'Medium', nasmaak_karakter: [], notities: '', mineralen: { pH: '', TDS: '', Ca: '', Mg: '', Na: '', K: '', HCO3: '', SO4: '', Cl: '', SiO2: '', NO3: '' } }
+            }
+        },
+        computed: {
+            activeFilterCount() { return this.filter.tags.length; },
+            processedWaters() {
+                let result = [...this.waters];
+                if (this.filter.search) { const q = this.filter.search.toLowerCase(); result = result.filter(w => w.naam.toLowerCase().includes(q) || w.merk.toLowerCase().includes(q)); }
+                if (this.filter.tags.length > 0) {
+                    result = result.filter(w => {
+                        const waterTags = [ ...(Array.isArray(w.mondgevoel) ? w.mondgevoel : []), ...(Array.isArray(w.aanzet) ? w.aanzet : []) ];
+                        return this.filter.tags.some(tag => waterTags.includes(tag));
+                    });
+                }
+                result.sort((a, b) => {
+                    const valA = a; const valB = b;
+                    switch(this.filter.sort) {
+                        case 'score_desc': return valB.score - valA.score;
+                        case 'score_asc': return valA.score - valB.score;
+                        case 'name_asc': return valA.naam.localeCompare(valB.naam);
+                        case 'ph_asc': return (parseFloat(valA.mineralen?.pH) || 0) - (parseFloat(valB.mineralen?.pH) || 0);
+                        case 'ph_desc': return (parseFloat(valB.mineralen?.pH) || 0) - (parseFloat(valA.mineralen?.pH) || 0);
+                        case 'tds_asc': return (parseFloat(valA.mineralen?.TDS) || 0) - (parseFloat(valB.mineralen?.TDS) || 0);
+                        default: return 0;
+                    }
+                });
+                return result;
+            }
+        },
+        mounted() { fetch('data.json').then(r => r.ok ? r.json() : []).then(data => { this.waters = data; this.loading = false; }).catch(() => { this.waters = []; this.loading = false; }); },
+        methods: {
+            toggleView() { this.view = this.view === 'list' ? 'add' : 'list'; this.generatedJson = null; this.compareSelection = []; this.showCompareModal = false; },
+            toggleTag(category, value) { const index = this.form[category].indexOf(value); if (index === -1) this.form[category].push(value); else this.form[category].splice(index, 1); },
+            toggleFilter(category, value) { const index = this.filter.tags.indexOf(value); if (index === -1) this.filter.tags.push(value); else this.filter.tags.splice(index, 1); },
+            clearFilters() { this.filter.tags = []; this.filter.search = ''; },
+            hasTags(val) { return Array.isArray(val) ? val.length > 0 : (val && val.length > 0); },
+            formatTags(val) { return Array.isArray(val) ? val.join(', ') : val; },
+            getAllTags(water) { let tags = []; if (Array.isArray(water.mondgevoel)) tags.push(...water.mondgevoel); if (Array.isArray(water.aanzet)) tags.push(...water.aanzet); if (water.nasmaak_lengte) tags.push(water.nasmaak_lengte + " afdronk"); if (Array.isArray(water.nasmaak_karakter)) tags.push(...water.nasmaak_karakter); return tags; },
+            generateJSON() { const newEntry = { ...this.form, datum: new Date().toISOString().split('T')[0] }; this.generatedJson = ",\n" + JSON.stringify(newEntry, null, 4); },
+            copyToClipboard() { navigator.clipboard.writeText(this.generatedJson).then(() => { this.copyStatus = 'GEKOPIEERD!'; setTimeout(() => this.copyStatus = 'KOPIEER', 2000); }); },
+            toggleCompare(water) {
+                const index = this.compareSelection.indexOf(water);
+                if (index > -1) { this.compareSelection.splice(index, 1); } 
+                else { if (this.compareSelection.length < 2) { this.compareSelection.push(water); } else { this.compareSelection.shift(); this.compareSelection.push(water); } }
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
