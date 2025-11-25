@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watermerk: Rate Water</title>
-    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/watermerk/favicon.png">
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -332,9 +332,90 @@
     <div v-if="view === 'add'" key="add" class="max-w-3xl mx-auto glass-card p-6 sm:p-8">
         <h2 class="text-2xl font-serif text-slate-800 mb-8">Nieuwe Proeverij</h2>
         <form @submit.prevent="generateJSON" class="space-y-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><div><label class="label">Naam</label><input v-model="form.naam" type="text" class="input-glass font-serif text-lg" placeholder="Bijv. Acqua Panna"></div><div><label class="label">Merk</label><input v-model="form.merk" type="text" class="input-glass" placeholder="Bijv. San Pellegrino"></div><div><label class="label">Type</label><select v-model="form.bronType" class="input-glass cursor-pointer"><option>Fles (Mineraal)</option><option>Fles (Bron)</option><option>Kraan (Thuis)</option><option>Kraan (Horeca)</option><option>Natuurlijke Bron</option></select></div><div><label class="label">Score (0-10)</label><input v-model.number="form.score" type="number" step="0.1" max="10" class="input-glass font-serif text-lg font-bold text-sky-700"></div></div><div><label class="label">Notitie</label><textarea v-model="form.notities" rows="2" class="input-glass font-serif italic" placeholder="Beschrijf de ervaring..."></textarea></div><hr class="border-slate-200/50"><div><h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Balans</h3><div class="bg-white/40 p-5 rounded-xl border border-white/60 space-y-6"><div v-for="metric in ['zuur', 'zout', 'bitter']" :key="metric" class="flex items-center gap-4"><label class="w-14 text-[10px] uppercase font-bold text-slate-400">{{ metric }}</label><input type="range" v-model.number="form[metric]" min="0" max="10" step="1" class="flex-1"><span class="w-6 text-right font-mono text-sm text-sky-700 font-bold">{{ form[metric] }}</span></div></div></div><div class="space-y-5"><div><label class="label mb-2">Mondgevoel</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.mondgevoel" @click="toggleTag('mondgevoel', opt)" :class="form.mondgevoel.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div><label class="label mb-2">Aanzet</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.aanzet" @click="toggleTag('aanzet', opt)" :class="form.aanzet.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="label mb-2">Nasmaak Lengte</label><select v-model="form.nasmaak_lengte" class="input-glass cursor-pointer"><option v-for="opt in options.nasmaak_lengte" :value="opt">{{ opt }}</option></select></div><div><label class="label mb-2">Nasmaak Karakter</label><div class="flex flex-wrap gap-2"><button type="button" v-for="opt in options.nasmaak_karakter" @click="toggleTag('nasmaak_karakter', opt)" :class="form.nasmaak_karakter.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button></div></div></div></div><div class="bg-blue-50/70 p-6 rounded-xl border border-blue-100 shadow-sm"><h3 class="text-sm font-bold text-blue-900 mb-6 flex items-center"><svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M10 2h4v6.29L19.75 19.18c.54 1.08-.25 2.32-1.46 2.32H5.71c-1.21 0-2-1.24-1.46-2.32L9 8.29V2z"/></svg>Samenstelling (mg/L & pH)</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-4"><div v-for="min in mineralFields" :key="min.key" class="flex flex-col"><label class="mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">{{ min.label }} <span class="text-blue-300 ml-0.5">({{ min.key }})</span></label><input v-model="form.mineralen[min.key]" type="text" class="input-solid" placeholder="-"></div></div></div><button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-400/30 transition-all transform hover:-translate-y-0.5 text-xs tracking-widest uppercase">Genereer JSON Code</button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label class="label">Naam</label>
+                    <input v-model="form.naam" type="text" class="input-glass font-serif text-lg" placeholder="Bijv. Acqua Panna">
+                </div>
+                <div>
+                    <label class="label">Merk</label>
+                    <input v-model="form.merk" type="text" class="input-glass" placeholder="Bijv. San Pellegrino">
+                </div>
+                <div>
+                    <label class="label">Type</label>
+                    <select v-model="form.bronType" class="input-glass cursor-pointer">
+                        <option>Fles (Mineraal)</option><option>Fles (Bron)</option><option>Kraan (Thuis)</option><option>Kraan (Horeca)</option><option>Natuurlijke Bron</option></select>
+                    </div>
+                    <div>
+                        <label class="label">Score (0-10)</label>
+                        <input v-model.number="form.score" type="number" step="0.1" max="10" class="input-glass font-serif text-lg font-bold text-sky-700">
+                    </div>
+                </div>
+                <div>
+                    <label class="label">Notitie</label>
+                    <textarea v-model="form.notities" rows="2" class="input-glass font-serif italic" placeholder="Beschrijf de ervaring..."></textarea>
+                </div>
+                <hr class="border-slate-200/50">
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Balans</h3>
+                    <div class="bg-white/40 p-5 rounded-xl border border-white/60 space-y-6">
+                        <div v-for="metric in ['zuur', 'zout', 'bitter']" :key="metric" class="flex items-center gap-4">
+                            <label class="w-14 text-[10px] uppercase font-bold text-slate-400">{{ metric }}</label>
+                            <input type="range" v-model.number="form[metric]" min="0" max="10" step="1" class="flex-1">
+                            <span class="w-6 text-right font-mono text-sm text-sky-700 font-bold">{{ form[metric] }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-5">
+                    <div>
+                        <label class="label mb-2">Mondgevoel</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" v-for="opt in options.mondgevoel" @click="toggleTag('mondgevoel', opt)" :class="form.mondgevoel.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label mb-2">Aanzet</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" v-for="opt in options.aanzet" @click="toggleTag('aanzet', opt)" :class="form.aanzet.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="label mb-2">Nasmaak Lengte</label>
+                            <select v-model="form.nasmaak_lengte" class="input-glass cursor-pointer">
+                                <option v-for="opt in options.nasmaak_lengte" :value="opt">{{ opt }}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label mb-2">Nasmaak Karakter</label>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" v-for="opt in options.nasmaak_karakter" @click="toggleTag('nasmaak_karakter', opt)" :class="form.nasmaak_karakter.includes(opt) ? 'bg-slate-700 text-white border-slate-700 shadow-lg shadow-slate-300' : 'bg-white/60 text-slate-500 border-white hover:border-sky-300'" class="border px-3 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all">{{ opt }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50/70 p-6 rounded-xl border border-blue-100 shadow-sm">
+                    <h3 class="text-sm font-bold text-blue-900 mb-6 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                Samenstelling (mg/L & pH)</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div v-for="min in mineralFields" :key="min.key" class="flex flex-col">
+                        <label class="mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">{{ min.label }} 
+                            <span class="text-blue-300 ml-0.5">({{ min.key }})</span>
+                        </label>
+                        <input v-model="form.mineralen[min.key]" type="text" class="input-solid" placeholder="-">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-400/30 transition-all transform hover:-translate-y-0.5 text-xs tracking-widest uppercase">Genereer JSON Code</button>
         </form>
-        <div v-if="generatedJson" class="mt-8 bg-slate-800 rounded-xl p-5 relative border border-slate-700 shadow-2xl"><div class="flex justify-between items-center mb-2"><span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Kopieer naar data.json</span><button @click="copyToClipboard" class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition">{{ copyStatus }}</button></div><pre class="text-emerald-400 font-mono text-[10px] leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-40">{{ generatedJson }}</pre></div>
+        <div v-if="generatedJson" class="mt-8 bg-slate-800 rounded-xl p-5 relative border border-slate-700 shadow-2xl">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Kopieer naar data.json</span>
+                <button @click="copyToClipboard" class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition">{{ copyStatus }}</button>
+            </div>
+            <pre class="text-emerald-400 font-mono text-[10px] leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-40">{{ generatedJson }}</pre>
+        </div>
     </div>
     </transition>
 </div>
